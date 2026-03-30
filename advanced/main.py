@@ -98,7 +98,11 @@ def file_mode() -> None:
         display.print_error("Please type 'encode' or 'decode'.")
         return
     input_path = input("  Input file path (.txt): ").strip()
+    if not input_path.endswith(".txt"):
+        input_path += ".txt"
     output_path = input("  Output file path (.txt): ").strip()
+    if not output_path.endswith(".txt"):
+        output_path += ".txt"
     shift = _get_shift()
     if shift is None:
         return
@@ -141,10 +145,9 @@ MODES = {
 
 def main() -> None:
     display.print_logo()
+    print(MENU)
 
     while True:
-        display.clear()
-        print(MENU)
         choice = input("  Enter 1 / 2 / 3 / 4 / 5 / 6: ").strip()
 
         if choice == "6":
@@ -153,9 +156,16 @@ def main() -> None:
 
         action = MODES.get(choice)
         if action:
-            action()
+            while True:
+                action()
+                key = display.get_keypress()
+                if key == "up":
+                    break
         else:
             display.print_error("Invalid choice — enter a number from 1 to 6.")
+
+        display.clear()
+        print(MENU)
 
 
 if __name__ == "__main__":

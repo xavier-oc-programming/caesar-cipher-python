@@ -40,7 +40,9 @@ def typewriter(text: str, speed: float = TYPEWRITER_SPEED) -> None:
 
 
 def print_logo() -> None:
+    clear()
     typewriter(Colors.CYAN + LOGO + Colors.RESET, speed=0.004)
+    time.sleep(3)
 
 
 def print_result(mode: str, original: str, result: str) -> None:
@@ -70,6 +72,24 @@ def print_file_result(mode: str, output_path: str) -> None:
     color = Colors.GREEN if mode == "encode" else Colors.MAGENTA
     print(f"\n  {color}{Colors.BOLD}File {mode}d successfully.{Colors.RESET}")
     print(f"  Saved to: {Colors.CYAN}{output_path}{Colors.RESET}\n")
+
+
+def get_keypress() -> str:
+    """Block until user presses a key. Returns 'up' for Up arrow, 'enter' for anything else."""
+    import termios, tty
+    print(f"\n  {Colors.DIM}↑  Back to menu   Enter  Stay in this mode{Colors.RESET}", flush=True)
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        ch = sys.stdin.read(1)
+        if ch == "\x1b":
+            rest = sys.stdin.read(2)
+            if rest == "[A":
+                return "up"
+        return "enter"
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
 
 def print_error(message: str) -> None:

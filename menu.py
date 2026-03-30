@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -28,6 +29,7 @@ def launch(script: Path) -> None:
 
 
 def main() -> None:
+    os.system("clear" if os.name == "posix" else "cls")
     print(LOGO)
 
     while True:
